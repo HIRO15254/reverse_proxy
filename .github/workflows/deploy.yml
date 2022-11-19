@@ -34,7 +34,7 @@ jobs:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: rsync -ahv --checksum --delete 
             -e "ssh -i .ssh/key -p ${DEPLOY_PORT} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" 
-            ./src/* ${DEPLOY_USER}@${DEPLOY_HOST}:~/reverse_proxy/
+            copy/* ${DEPLOY_USER}@${DEPLOY_HOST}:~/reverse_proxy/
 
       - name: Reboot Docker
         env:
@@ -45,7 +45,6 @@ jobs:
             ${DEPLOY_USER}@${DEPLOY_HOST} 
             "
               cd ~/reverse_proxy 
-              mkdir nginx-proxy
               && docker-compose down
               && docker-compose build
               && docker-compose up -d
