@@ -29,7 +29,7 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        run: rsync -rptgDvz --checksum --delete -n \
-            -- exclude '.git/*' \
-            -e "ssh -i key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" \
-            / /reverse_proxy
+        run: rsync -ahvn --checksum --delete 
+            --exclude '.git/*' 
+            -e "ssh -i key -p ${DEPLOY_PORT} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" 
+            ./* ${DEPLOY_USER}@${DEPLOY_HOST}:~/reverse_proxy/
