@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: prepare .ssh dir
+        run: mkdir -p .ssh && chmod 700 .ssh
       
       - name: Generate SSH key
         env:
@@ -29,6 +32,6 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        run: rsync -ahvn --checksum --delete 
+        run: rsync -ahv --checksum --delete 
             -e "ssh -i .ssh/key -p ${DEPLOY_PORT} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" 
             ./src/* ${DEPLOY_USER}@${DEPLOY_HOST}:~/reverse_proxy/
