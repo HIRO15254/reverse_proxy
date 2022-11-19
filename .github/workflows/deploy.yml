@@ -22,7 +22,7 @@ jobs:
       - name: Generate SSH key
         env:
           SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
-        run: echo "$SSH_PRIVATE_KEY" > key && chmod 600 key
+        run: echo "$SSH_PRIVATE_KEY" > .ssh/key && chmod 600 .ssh/key
 
       - name: Deploy to VPS
         env:
@@ -30,6 +30,5 @@ jobs:
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: rsync -ahvn --checksum --delete 
-            --exclude '.git/*' 
-            -e "ssh -i key -p ${DEPLOY_PORT} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" 
-            ./* ${DEPLOY_USER}@${DEPLOY_HOST}:~/reverse_proxy/
+            -e "ssh -i .ssh/key -p ${DEPLOY_PORT} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" 
+            ./src/* ${DEPLOY_USER}@${DEPLOY_HOST}:~/reverse_proxy/
